@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  kafka:
+    image: bitnami/kafka:latest
+    ports:
+      - "9092:9092"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - my-network
+      
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    depends_on:
+      - kafka
+    volumes:
+      - ./app.py:/app/app.py
+      - ./requirements.txt:/app/requirements.txt
+    networks:
+      - my-network
+
+networks:
+  my-network:
